@@ -1,36 +1,39 @@
 /* eslint-disable no-console */
 import React, { useState, useRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { addKeywords } from '../../store/keywordsSlice';
 import { getSickDataRequest } from '../../api/api';
 import { SearchBox, NoSearchBox } from './SearchBoxes';
 import { highlightedText } from '../../utils/hightLighting';
+import { useAppDispatch, useAppSelector } from '../../hooks/typeHooks';
+import { selectsickNmData } from '../../store/keywordsSlice';
 
 const Home = () => {
   const [inputValue, setinputValue] = useState('');
   const [keywordList, setKeywordList] = useState([]);
 
-  const dispatch = useDispatch();
-  const { keywords } = useSelector(state => state);
+  // [hook4 - 컴포넌트에서 만들어둔 hook을 가져다 이런식으로 사용한다.
+  // 컴포넌트에서 type지정을 반복적으로 하지 않고 바로 hook을 가져다 쓰면 되서 편해짐!]
+  const dispatch = useAppDispatch();
+  const { keywords } = useAppSelector(selectsickNmData);
 
-  let decounceFlag = useRef();
+  const decounceFlag = useRef(0);
 
-  const keywordChange = e => {
+  const keywordChange = (e: any) => {
     clearTimeout(decounceFlag.current);
     setKeywordList([]);
 
-    let inputValue = e.target.value;
+    const inputValue = e.target.value;
     setinputValue(inputValue);
 
     if (inputValue === '') {
       return;
     }
 
-    decounceFlag.current = setTimeout(() => {
+    decounceFlag.current = window.setTimeout(() => {
       const sickNameList = keywords[inputValue];
 
       if (sickNameList) {
-        const bordList = sickNameList.map(el => highlightedText(el.sickNm, inputValue));
+        const bordList = sickNameList.map((el: any) => highlightedText(el.sickNm, inputValue));
         setKeywordList(bordList);
       } else {
         getSickDataRequest(inputValue).then(res => {
@@ -40,7 +43,7 @@ const Home = () => {
           const responseList = res.data;
           dispatch(addKeywords({ searchWord: inputValue, result: responseList }));
 
-          const bordList = responseList.map(el => highlightedText(el.sickNm, inputValue));
+          const bordList = responseList.map((el: any) => highlightedText(el.sickNm, inputValue));
           setKeywordList(bordList);
         });
       }
