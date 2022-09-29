@@ -5,24 +5,24 @@ import { getSickDataRequest } from '../../api/api';
 import { SearchBox, NoSearchBox } from './SearchBoxes';
 import { highlightedText } from '../../utils/hightLighting';
 import { useAppDispatch, useAppSelector } from '../../hooks/typeHooks';
-import { selectsickNmData } from '../../store/keywordsSlice';
+import { selectsickNmData, ItemResult } from '../../store/keywordsSlice';
 
 const Home = () => {
   const [inputValue, setinputValue] = useState('');
-  const [keywordList, setKeywordList] = useState([]);
+  const [keywordList, setKeywordList] = useState<(JSX.Element | undefined)[]>([]);
 
   // [hook4 - 컴포넌트에서 만들어둔 hook을 가져다 이런식으로 사용한다.
   // 컴포넌트에서 type지정을 반복적으로 하지 않고 바로 hook을 가져다 쓰면 되서 편해짐!]
   const dispatch = useAppDispatch();
-  const { keywords } = useAppSelector(selectsickNmData);
+  const keywords = useAppSelector(selectsickNmData);
 
   const decounceFlag = useRef(0);
 
-  const keywordChange = (e: any) => {
+  const keywordChange = (e: React.FormEvent<HTMLInputElement>) => {
     clearTimeout(decounceFlag.current);
     setKeywordList([]);
 
-    const inputValue = e.target.value;
+    const inputValue = (e.target as HTMLInputElement).value;
     setinputValue(inputValue);
 
     if (inputValue === '') {
@@ -33,7 +33,10 @@ const Home = () => {
       const sickNameList = keywords[inputValue];
 
       if (sickNameList) {
-        const bordList = sickNameList.map((el: any) => highlightedText(el.sickNm, inputValue));
+        const bordList = sickNameList.map((el: ItemResult) => {
+          return highlightedText(el.sickNm, inputValue);
+        });
+
         setKeywordList(bordList);
       } else {
         getSickDataRequest(inputValue).then(res => {
@@ -43,7 +46,9 @@ const Home = () => {
           const responseList = res.data;
           dispatch(addKeywords({ searchWord: inputValue, result: responseList }));
 
-          const bordList = responseList.map((el: any) => highlightedText(el.sickNm, inputValue));
+          const bordList = responseList.map((el: ItemResult) =>
+            highlightedText(el.sickNm, inputValue)
+          );
           setKeywordList(bordList);
         });
       }

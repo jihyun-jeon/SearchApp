@@ -8,7 +8,7 @@ const Router = () => {
     <Provider store={store}>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/searchApp" element={<Home />} />
         </Routes>
       </BrowserRouter>
     </Provider>
