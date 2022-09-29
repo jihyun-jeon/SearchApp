@@ -2,9 +2,11 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { BsInbox } from 'react-icons/bs';
-import { ItemResult } from '../../store/keywordsSlice';
+import { useAppSelector } from '../../hooks/typeHooks';
+import { selectsickNmData } from '../../store/keywordsSlice';
 
-export const SearchBox = ({ keywordList }: { keywordList: ItemResult[] }) => {
+export const SearchBox = ({ inputValue }: { inputValue: string }) => {
+  const keywordList = useAppSelector(selectsickNmData)[inputValue];
   const [highLighNum, setHighLighNum] = useState(0);
 
   // [p] 'undefined' 형식은 'HTMLAnchorElement | null' 형식에 할당할 수 없습니다.

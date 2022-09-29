@@ -1,11 +1,10 @@
 /* eslint-disable no-console */
 import React, { useState, useRef } from 'react';
-import { addKeywords } from '../../store/keywordsSlice';
 import { getSickDataRequest } from '../../api/api';
 import { SearchBox, NoSearchBox } from './SearchBoxes';
 import { highlightedText } from '../../utils/hightLighting';
 import { useAppDispatch, useAppSelector } from '../../hooks/typeHooks';
-import { selectsickNmData, ItemResult } from '../../store/keywordsSlice';
+import { addKeywords, selectsickNmData, ItemResult } from '../../store/keywordsSlice';
 
 const Home = () => {
   const [inputValue, setinputValue] = useState('');
@@ -78,7 +77,7 @@ const Home = () => {
           </button>
         </div>
       </div>
-      {inputValue && keywordList.length > 0 && <SearchBox keywordList={keywordList} />}
+      {inputValue && keywordList.length > 0 && <SearchBox inputValue={inputValue} />}
       {inputValue && keywordList.length === 0 && <NoSearchBox />}
       {/* [TODO] 버그해결 - 검색어 입력 후 api기다리는 동안 바로 noSearchBox가 나와서, 실제 검색결과 있어도 noSearchBox를 한번씩 거치고 가는 버그 있음 */}
     </header>

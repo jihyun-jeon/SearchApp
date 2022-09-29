@@ -17,7 +17,6 @@ const keywordsSlice = createSlice({
     // [p2-2] PayloadAction 제네릭을 통해 action안에 있는 payload에 대한 타입만 넣어줌
     // action.type은 별도로 타입지정하기 않아도 type은 string으로 기본적으로 지정되있어서 ,  T extends string = string
     addKeywords: (state, action: PayloadAction<{ searchWord: string; result: ItemResult[] }>) => {
-      console.log(action.payload);
       state[action.payload.searchWord] = action.payload.result;
     },
   },
